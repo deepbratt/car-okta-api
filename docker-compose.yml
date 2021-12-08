@@ -6,48 +6,70 @@ services:
   #     - '3006:3006'
   #   networks:
   #     - ms_network
-  swagger:
-    build: './swagger'
-    ports:
-      - '3005:3005'
-    networks:
-      - ms_network
+  # swagger:
+  #   build: './swagger'
+  #   ports:
+  #     - '3005:3005'
+  #   networks:
+  #     - ms_network
+  #   deploy:
+  #       resources:
+  #           limits:
+  #             cpus: 0.25
+  #             memory: 500M
   users:
-    build: '../TeazDealzapl_Users'
+    build: '../car-okta-users'
     ports:
       - '3004:3004'
     networks:
       - ms_network
+    deploy:
+        resources:
+            limits:
+              cpus: 0.25
+              memory: 500M
   ads:
-    build: '../TeazDealzAPI_Ads'
+    build: '../car-okta-ads'
     ports:
       - '3003:3003'
     depends_on:
       - users
     networks:
       - ms_network
+    deploy:
+        resources:
+            limits:
+              cpus: 0.25
+              memory: 1000M
   tickets:
-    build: '../TeazDealzAPI_Tickets'
+    build: '../car-okta-tickets'
     ports:
       - '3002:3002'
     depends_on:
       - users
     networks:
       - ms_network
-  # nginx:
-  #   image: nginx:latest
-  #   ports:
-  #     - '80:80'
-  #   volumes:
-  #     - ./default.conf:/etc/nginx/conf.d/default.conf
-  #   # depends_on:
-  #     # - users
-  #     # - ads
-  #     # - swagger
-  #     # - tickets
-  #     # - appointments
-  #   networks:
-  #     - ms_network
+    deploy:
+        resources:
+            limits:
+              cpus: 0.25
+              memory: 500M
+  nginx:
+    build: './swagger'
+    image: nginx:latest
+    ports:
+      - '80:80'
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+      # - ./default.conf:/swagger/default.conf
+    depends_on:
+      - users
+      - ads
+      # - swagger
+      - tickets
+      # - appointments
+    networks:
+      - ms_network
 networks:
   ms_network:
     driver: bridge
