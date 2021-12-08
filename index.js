@@ -3,7 +3,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
-const swaggerDocument = YAML.load('./config/swagger.yaml');
+const swaggerDocument = YAML.load('../config/swagger.yaml');
 const { AppError } = require('@utils/tdb_globalutils');
 
 const PORT = 3005; // port
